@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Comments from "@/components/feed/Comments";
+import CommentSection from "@/components/feed/CommentSection";
 import PostInteraction from "@/components/feed/PostInteraction";
 
 const Post = () => {
@@ -48,7 +48,7 @@ const Post = () => {
       <PostInteraction />
 
       {/* COMMENTS */}
-      <Comments />
+      <CommentSection />
     </div>
   );
 };
