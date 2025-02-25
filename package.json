@@ -15,7 +15,7 @@
     "prisma": "^6.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "svix": "^1.57.0"
+    "svix": "^1.59.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
