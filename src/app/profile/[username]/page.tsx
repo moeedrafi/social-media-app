@@ -1,13 +1,13 @@
+import Image from "next/image";
 import Feed from "@/components/feed/Feed";
 import LeftMenu from "@/components/leftMenu/LeftMenu";
 import RightMenu from "@/components/rightMenu/RightMenu";
-import Image from "next/image";
 
 const ProfilePage = () => {
   return (
     <div className="flex gap-6 pt-6">
       <div className="hidden xl:block w-[20%]">
-        <LeftMenu />
+        <LeftMenu type="profile" />
       </div>
 
       <div className="w-full lg:w-[70%] xl:w-[50%]">

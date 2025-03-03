@@ -3,10 +3,10 @@ import Ad from "../Ad";
 import Image from "next/image";
 import Link from "next/link";
 
-const LeftMenu = () => {
+const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
   return (
     <div className="flex flex-col gap-6">
-      <ProfileCard />
+      {type === "home" && <ProfileCard />}
 
       {/* LINKS */}
       <div className="p-4 bg-white rounded-lg shadow-md text-sm flex flex-col gap-2">
