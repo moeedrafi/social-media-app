@@ -36,10 +36,9 @@ model User {
   blocks                Block[]           @relation("BlocksSent")
   blockedBy             Block[]           @relation("BlocksReceived")
   stories               Story[]
-  FollowRequest         FollowRequest[]
-  StoryVisibility       StoryVisibility[]
-  PostVisibility        PostVisibility[]
-  StoryViews            StoryViews[]
+  storyVisibility       StoryVisibility[]
+  postVisibility        PostVisibility[]
+  storyViews            StoryViews[]
 }
 
 model Post {
@@ -51,9 +50,9 @@ model Post {
   updatedAt      DateTime         @updatedAt
   userId         String
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Comment        Comment[]
-  Like           Like[]
-  PostVisibility PostVisibility[]
+  comments       Comment[]
+  likes          Like[]
+  postVisibility PostVisibility[]
 }
 
 model PostVisibility {
@@ -104,8 +103,6 @@ model FollowRequest {
   senderId   String
   receiver   User     @relation("FollowRequestsReceived", fields: [receiverId], onDelete: Cascade, references: [id])
   receiverId String
-  User       User?    @relation(fields: [userId], references: [id])
-  userId     String?
 
   @@unique([senderId, receiverId])
 }
@@ -128,7 +125,7 @@ model Story {
   img             String
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
-  StoryVisibility StoryVisibility[]
+  storyVisibility StoryVisibility[]
   storyViews      StoryViews[]
 }
 
