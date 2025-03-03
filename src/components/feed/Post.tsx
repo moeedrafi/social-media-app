@@ -50,7 +50,7 @@ const Post = async ({ post }: { post: FeedPostType }) => {
         {post.img && (
           <div className="w-full min-h-96 relative">
             <Image
-              src="/noCover.png"
+              src={post.img}
               alt=""
               fill
               className="object-cover rounded-md"
