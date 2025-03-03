@@ -1,7 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
+import prisma from "@/lib/client";
 import { User } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
+
+import UserInfoInteraction from "@/components/rightMenu/UserInfoInteraction";
 
 const UserInfo = async ({ user }: { user: User }) => {
   const createdAtDate = new Date(user.createdAt);
@@ -12,6 +15,28 @@ const UserInfo = async ({ user }: { user: User }) => {
   });
 
   const { userId: currentUserId } = await auth();
+
+  let isFollowing = false;
+  let isFollowingSent = false;
+  let isUserBlocked = false;
+
+  if (currentUserId) {
+    const [blockRes, followRes, followReqRes] = await Promise.all([
+      await prisma.block.findFirst({
+        where: { blockerId: currentUserId, blockedId: user.id },
+      }),
+      await prisma.follower.findFirst({
+        where: { followingId: currentUserId, followerId: user.id },
+      }),
+      await prisma.followRequest.findFirst({
+        where: { senderId: currentUserId, receiverId: user.id },
+      }),
+    ]);
+
+    isFollowing = !!followRes;
+    isUserBlocked = !!blockRes;
+    isFollowingSent = !!followReqRes;
+  }
 
   return (
     <div className="p-4 bg-white shadow-md rounded-lg text-sm flex flex-col gap-4">
@@ -75,12 +100,12 @@ const UserInfo = async ({ user }: { user: User }) => {
         </div>
 
         {currentUserId && currentUserId !== user.id && (
-          <>
-            <button className="w-full bg-blue-500 text-white text-sm rounded-md p-2">
-              Follow
-            </button>
-            <button className="text-red-400 text-xs self-end">Block</button>
-          </>
+          <UserInfoInteraction
+            userId={user.id}
+            isFollowing={isFollowing}
+            isFollowingSent={isFollowingSent}
+            isUserBlocked={isUserBlocked}
+          />
         )}
       </div>
     </div>
