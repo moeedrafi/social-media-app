@@ -79,7 +79,7 @@ export const acceptFollowRequest = async (userId: string) => {
 
     if (existingFollowRequest) {
       await prisma.follower.create({
-        data: { followingId: currentUserId, followerId: userId },
+        data: { followerId: currentUserId, followingId: userId },
       });
 
       await prisma.followRequest.delete({

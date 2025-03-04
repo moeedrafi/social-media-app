@@ -14,7 +14,7 @@ const ProfileCard = async () => {
     },
   });
 
-  if (!user) return;
+  if (!user) return null;
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md text-sm flex flex-col gap-6">
