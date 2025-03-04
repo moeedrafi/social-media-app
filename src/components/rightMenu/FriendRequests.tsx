@@ -1,7 +1,19 @@
 import Link from "next/link";
+import prisma from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
 import FriendRequestsList from "@/components/rightMenu/FriendRequestsList";
 
-const FriendRequests = () => {
+const FriendRequests = async () => {
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  const requests = await prisma.followRequest.findMany({
+    where: { receiverId: userId },
+    include: { sender: true },
+  });
+
+  if (requests.length === 0) return null;
+
   return (
     <div className="p-4 bg-white shadow-md rounded-lg text-sm flex flex-col gap-4">
       <div className="flex justify-between items-center font-medium">
@@ -11,7 +23,7 @@ const FriendRequests = () => {
         </Link>
       </div>
 
-      <FriendRequestsList />
+      <FriendRequestsList requests={requests} />
     </div>
   );
 };

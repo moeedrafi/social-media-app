@@ -65,3 +65,51 @@ export const switchBlock = async (userId: string) => {
     throw new Error("Failed to update block. Please try again.");
   }
 };
+
+export const acceptFollowRequest = async (userId: string) => {
+  const { userId: currentUserId } = await auth();
+  if (!currentUserId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  try {
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: { receiverId: currentUserId, senderId: userId },
+    });
+
+    if (existingFollowRequest) {
+      await prisma.follower.create({
+        data: { followingId: currentUserId, followerId: userId },
+      });
+
+      await prisma.followRequest.delete({
+        where: { id: existingFollowRequest.id },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to accept request. Please try again.");
+  }
+};
+
+export const declineFollowRequest = async (userId: string) => {
+  const { userId: currentUserId } = await auth();
+  if (!currentUserId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  try {
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: { receiverId: currentUserId, senderId: userId },
+    });
+
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: { id: existingFollowRequest.id },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to decline request. Please try again.");
+  }
+};
