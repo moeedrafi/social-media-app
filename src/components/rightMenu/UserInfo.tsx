@@ -4,6 +4,7 @@ import prisma from "@/lib/client";
 import { User } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 
+import UpdateUser from "@/components/rightMenu/UpdateUser";
 import UserInfoInteraction from "@/components/rightMenu/UserInfoInteraction";
 
 const UserInfo = async ({ user }: { user: User }) => {
@@ -42,9 +43,13 @@ const UserInfo = async ({ user }: { user: User }) => {
     <div className="p-4 bg-white shadow-md rounded-lg text-sm flex flex-col gap-4">
       <div className="flex justify-between items-center font-medium">
         <span className="text-gray-500">User Information</span>
-        <Link href="/" className="text-blue-500 text-xs">
-          See all
-        </Link>
+        {currentUserId === user.id ? (
+          <UpdateUser user={user} />
+        ) : (
+          <Link href="/" className="text-blue-500 text-xs">
+            See all
+          </Link>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 text-gray-500">
