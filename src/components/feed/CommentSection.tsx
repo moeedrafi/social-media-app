@@ -1,18 +1,16 @@
-import Comments from "@/components/feed/Comments";
-import CommentInput from "@/components/feed/CommentInput";
+import prisma from "@/lib/client";
 
-const CommentSection = () => {
+import Comments from "@/components/feed/Comments";
+
+const CommentSection = async ({ postId }: { postId: number }) => {
+  const comments = await prisma.comment.findMany({
+    where: { postId },
+    include: { user: true },
+  });
+
   return (
     <div>
-      {/* INPUT */}
-      <CommentInput placeholder="Write a Comment..." />
-
-      {/* COMMNTS */}
-      <Comments
-        username="moeedrafi"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit."
-        avatar="/noCover.png"
-      />
+      <Comments comments={comments} postId={postId} />
     </div>
   );
 };

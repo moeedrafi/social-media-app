@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { Post as PostType, User } from "@prisma/client";
 
@@ -60,14 +61,18 @@ const Post = async ({ post }: { post: FeedPostType }) => {
       </div>
 
       {/* POST INTERACTION */}
-      <PostInteraction
-        postId={post.id}
-        likes={post.likes.map((like) => like.userId)}
-        commentNumber={post._count.comments}
-      />
+      <Suspense fallback="loading">
+        <PostInteraction
+          postId={post.id}
+          likes={post.likes.map((like) => like.userId)}
+          commentNumber={post._count.comments}
+        />
+      </Suspense>
 
       {/* COMMENTS */}
-      <CommentSection />
+      <Suspense fallback="loading">
+        <CommentSection postId={post.id} />
+      </Suspense>
     </div>
   );
 };
