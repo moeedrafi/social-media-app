@@ -60,7 +60,11 @@ const Post = async ({ post }: { post: FeedPostType }) => {
       </div>
 
       {/* POST INTERACTION */}
-      <PostInteraction />
+      <PostInteraction
+        postId={post.id}
+        likes={post.likes.map((like) => like.userId)}
+        commentNumber={post._count.comments}
+      />
 
       {/* COMMENTS */}
       <CommentSection />
