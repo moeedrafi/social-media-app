@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import { switchLike } from "@/lib/actions";
-import { useOptimistic, useState } from "react";
+import { useEffect, useOptimistic, useState } from "react";
 
 interface PostInteractionProps {
   postId: number;
@@ -31,13 +31,20 @@ const PostInteraction = ({
     }
   );
 
+  useEffect(() => {
+    setLikeState({
+      likeCount: likes.length,
+      isLiked: userId ? likes.includes(userId) : false,
+    });
+  }, [likes, userId]);
+
   const likeAction = async () => {
     switchOptimisticLike("");
     try {
       await switchLike(postId);
       setLikeState((prev) => ({
-        isLiked: !prev.isLiked,
         likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
+        isLiked: !prev.isLiked,
       }));
     } catch (error) {
       console.log(error);
@@ -55,6 +62,7 @@ const PostInteraction = ({
                 alt="like"
                 width={16}
                 height={16}
+                className="cursor-pointer"
               />
             </button>
           </form>
