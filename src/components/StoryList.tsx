@@ -6,6 +6,7 @@ import { addStory } from "@/lib/actions";
 import { Story, User } from "@prisma/client";
 import { useOptimistic, useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
+import StoryView from "./StoryView";
 
 type StoryWithUser = Story & { user: User };
 interface StoryListProps {
@@ -20,6 +21,7 @@ interface CloudinaryUploadResult {
 
 const StoryList = ({ stories, userId }: StoryListProps) => {
   const [storyList, setStoryList] = useState(stories);
+  const [isStoryView, setIsStoryView] = useState<boolean>(false);
   const [img, setImg] = useState<CloudinaryUploadResult | null>(null);
 
   const { user } = useUser();
@@ -63,11 +65,17 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
   };
 
   const userStories = optimisticStories.filter(
-    (story) => story.userId === user?.id
+    (story) => story.userId === userId
   );
   const otherStories = optimisticStories.filter(
-    (story) => story.userId !== user?.id
+    (story) => story.userId !== userId
   );
+
+  const [activeStoryUser, setActiveStoryUser] = useState<null | Story>(null);
+  const openStoryViewer = (story: Story) => {
+    setIsStoryView(true);
+    setActiveStoryUser(story);
+  };
 
   return (
     <>
@@ -115,6 +123,7 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
             width={80}
             height={80}
             className="w-20 h-20 rounded-full ring-2"
+            onClick={() => setIsStoryView(!isStoryView)}
           />
           <span className="font-medium">
             {story.user.name || story.user.username}
@@ -133,12 +142,20 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
             width={80}
             height={80}
             className="w-20 h-20 rounded-full ring-2"
+            onClick={() => openStoryViewer(story)}
           />
           <span className="font-medium">
             {story.user.name || story.user.username}
           </span>
         </div>
       ))}
+
+      {isStoryView && (
+        <StoryView
+          userStory={activeStoryUser!}
+          setIsStoryView={setIsStoryView}
+        />
+      )}
     </>
   );
 };
