@@ -29,8 +29,8 @@ model User {
   post                  Post[]
   comment               Comment[]
   likes                 Like[]
-  followers             Follower[]        @relation("UserFollowers")
-  followings            Follower[]        @relation("UserFollowings")
+  followers             Follower[]        @relation("UserFollowings")
+  followings            Follower[]        @relation("UserFollowers")
   followRequestSent     FollowRequest[]   @relation("FollowRequestsSent")
   followRequestReceived FollowRequest[]   @relation("FollowRequestsReceived")
   blocks                Block[]           @relation("BlocksSent")
@@ -90,10 +90,12 @@ model Like {
 model Follower {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
-  follower    User     @relation("UserFollowers", fields: [followerId], onDelete: Cascade, references: [id])
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
   followerId  String
-  following   User     @relation("UserFollowings", fields: [followingId], onDelete: Cascade, references: [id])
+  following   User     @relation("UserFollowings", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
+
+  @@unique([followerId, followingId])
 }
 
 model FollowRequest {

@@ -27,7 +27,7 @@ const UserInfo = async ({ user }: { user: User }) => {
         where: { blockerId: currentUserId, blockedId: user.id },
       }),
       await prisma.follower.findFirst({
-        where: { followingId: currentUserId, followerId: user.id },
+        where: { followingId: user.id, followerId: currentUserId },
       }),
       await prisma.followRequest.findFirst({
         where: { senderId: currentUserId, receiverId: user.id },

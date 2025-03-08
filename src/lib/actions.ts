@@ -36,8 +36,8 @@ export const switchFollow = async (userId: string) => {
         });
       }
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     throw new Error("Failed to update follow status. Please try again.");
   }
 };
@@ -80,12 +80,12 @@ export const acceptFollowRequest = async (userId: string) => {
     });
 
     if (existingFollowRequest) {
-      await prisma.follower.create({
-        data: { followerId: currentUserId, followingId: userId },
-      });
-
       await prisma.followRequest.delete({
         where: { id: existingFollowRequest.id },
+      });
+
+      await prisma.follower.create({
+        data: { followerId: userId, followingId: currentUserId },
       });
     }
   } catch (error) {
