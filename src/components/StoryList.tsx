@@ -72,9 +72,18 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
   );
 
   const [activeStoryUser, setActiveStoryUser] = useState<null | Story>(null);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const openStoryViewer = (story: Story) => {
     setIsStoryView(true);
     setActiveStoryUser(story);
+  };
+  const nextStory = () => {
+    if (currentStoryIndex < stories.length - 1) {
+      setCurrentStoryIndex((prev) => prev + 1);
+      setActiveStoryUser(stories[currentStoryIndex + 1]);
+    } else {
+      setIsStoryView(false);
+    }
   };
 
   return (
@@ -152,6 +161,7 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
 
       {isStoryView && (
         <StoryView
+          nextStory={nextStory}
           userStory={activeStoryUser!}
           setIsStoryView={setIsStoryView}
         />

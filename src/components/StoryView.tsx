@@ -6,13 +6,18 @@ import ProgressBar from "./ProgressBar";
 
 interface StoryViewProps {
   userStory: Story;
+  nextStory: () => void;
   setIsStoryView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const StoryView = ({ userStory, setIsStoryView }: StoryViewProps) => {
+const StoryView = ({
+  userStory,
+  setIsStoryView,
+  nextStory,
+}: StoryViewProps) => {
   return (
     <div className="absolute top-0 right-0 w-full h-screen bg-slate-300 bg-opacity-50 flex flex-col items-center justify-center gap-2 z-30">
-      <ProgressBar duration={5000} isActive={true} />
+      <ProgressBar duration={5000} onComplete={() => setIsStoryView(false)} />
 
       <button
         onClick={() => setIsStoryView(false)}
@@ -34,7 +39,12 @@ const StoryView = ({ userStory, setIsStoryView }: StoryViewProps) => {
             className="w-full h-[90%] rounded-lg"
           />
         </div>
-        <button className="bg-blue-500 text-white p-2 rounded-lg">Next</button>
+        <button
+          onClick={nextStory}
+          className="bg-blue-500 text-white p-2 rounded-lg"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

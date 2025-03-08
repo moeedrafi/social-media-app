@@ -4,30 +4,28 @@ import { useEffect, useState } from "react";
 
 interface ProgressBarProps {
   duration: number;
-  isActive: boolean;
-  onComplete?: () => void;
+  onComplete: () => void;
 }
 
-const ProgressBar = ({ duration, isActive, onComplete }: ProgressBarProps) => {
+const ProgressBar = ({ duration, onComplete }: ProgressBarProps) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (!isActive) return;
     setProgress(0);
 
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          //   onComplete();
+          onComplete();
           return 100;
         }
-        return prev + 1;
+        return prev + 100 / (duration / 100);
       });
+    }, 100);
 
-      return () => clearInterval(interval);
-    }, duration / 100);
-  }, [isActive, duration, onComplete]);
+    return () => clearInterval(interval);
+  }, [duration, onComplete]);
 
   return (
     <div className="h-1 w-full bg-gray-300">
