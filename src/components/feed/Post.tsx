@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { Post as PostType, User } from "@prisma/client";
 
+import PostInfo from "@/components/feed/PostInfo";
 import CommentSection from "@/components/feed/CommentSection";
 import PostInteraction from "@/components/feed/PostInteraction";
 
@@ -34,15 +35,7 @@ const Post = async ({ post }: { post: FeedPostType }) => {
           </span>
         </div>
 
-        {userId === post.user.id && (
-          <Image
-            src="/more.png"
-            width={16}
-            height={16}
-            alt=""
-            className="cursor-pointer"
-          />
-        )}
+        {userId === post.user.id && <PostInfo postId={post.id} />}
       </div>
 
       {/* DSEC */}
