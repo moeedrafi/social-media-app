@@ -62,6 +62,13 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
     }
   };
 
+  const userStories = optimisticStories.filter(
+    (story) => story.userId === user?.id
+  );
+  const otherStories = optimisticStories.filter(
+    (story) => story.userId !== user?.id
+  );
+
   return (
     <>
       <CldUploadWidget
@@ -97,7 +104,25 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         }}
       </CldUploadWidget>
 
-      {optimisticStories.map((story) => (
+      {userStories.map((story) => (
+        <div
+          key={story.id}
+          className="flex flex-col items-center gap-2 cursor-pointer"
+        >
+          <Image
+            src={story.user.avatar || "/noAvatar.png"}
+            alt="avatar"
+            width={80}
+            height={80}
+            className="w-20 h-20 rounded-full ring-2"
+          />
+          <span className="font-medium">
+            {story.user.name || story.user.username}
+          </span>
+        </div>
+      ))}
+
+      {otherStories.map((story) => (
         <div
           key={story.id}
           className="flex flex-col items-center gap-2 cursor-pointer"
