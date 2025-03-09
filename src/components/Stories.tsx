@@ -14,7 +14,7 @@ const Stories = async () => {
         { userId: currentUserId },
       ],
     },
-    include: { user: true },
+    include: { user: true, storyViews: { include: { viewer: true } } },
   });
 
   return (

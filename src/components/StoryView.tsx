@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import ProgressBar from "./ProgressBar";
-import { Story, User } from "@prisma/client";
+import { Story, StoryViews, User } from "@prisma/client";
+import StorySeen from "@/components/StorySeen";
 
-type StoryWithUser = Story & { user: User };
+type StoryWithUser = Story & { user: User; storyViews: StoryViews[] };
 interface StoryViewProps {
   userStory: StoryWithUser;
   isOwnStory: boolean;
@@ -26,7 +27,9 @@ const StoryView = ({
 }: StoryViewProps) => {
   return (
     <div className="absolute top-0 right-0 w-full h-screen bg-slate-300 bg-opacity-50 flex flex-col items-center justify-center gap-2 z-30">
-      <ProgressBar duration={5000} onComplete={() => setIsStoryView(false)} />
+      {!isOwnStory && (
+        <ProgressBar duration={5000} onComplete={() => setIsStoryView(false)} />
+      )}
 
       <button
         onClick={() => setIsStoryView(false)}
@@ -61,11 +64,7 @@ const StoryView = ({
         </button>
       </div>
 
-      {isOwnStory && (
-        <div className="bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-bold">Seen by:</h3>
-        </div>
-      )}
+      {isOwnStory && <StorySeen story={userStory} />}
     </div>
   );
 };

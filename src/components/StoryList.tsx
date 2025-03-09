@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
-import { addStory } from "@/lib/actions";
-import { Story, User } from "@prisma/client";
+import { addStory, seenStory } from "@/lib/actions";
+import { Story, StoryViews, User } from "@prisma/client";
 import { useOptimistic, useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import StoryView from "./StoryView";
 
-type StoryWithUser = Story & { user: User };
+type StoryWithUser = Story & { user: User; storyViews: StoryViews[] };
 interface StoryListProps {
   stories: StoryWithUser[];
   userId: string;
@@ -54,10 +54,12 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         website: "",
         createdAt: new Date(Date.now()),
       },
+      storyViews: [],
     });
     try {
       const createdStory = await addStory(img.secure_url);
-      setStoryList((prev) => [createdStory, ...prev]);
+      const storyWithViews: StoryWithUser = { ...createdStory, storyViews: [] };
+      setStoryList((prev) => [storyWithViews, ...prev]);
       setImg(null);
     } catch (error) {
       console.log(error);
@@ -76,10 +78,18 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
     null
   );
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-  const openStoryViewer = (story: StoryWithUser) => {
-    setIsStoryView(true);
-    setActiveStoryUser(story);
-    setCurrentStoryIndex(sortedStories.findIndex((s) => s.id === story.id));
+  const openStoryViewer = async (story: StoryWithUser) => {
+    try {
+      setIsStoryView(true);
+      setActiveStoryUser(story);
+      setCurrentStoryIndex(sortedStories.findIndex((s) => s.id === story.id));
+
+      if (story.user.id !== userId) {
+        await seenStory(story.id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const nextStory = () => {
     if (currentStoryIndex < sortedStories.length - 1) {
@@ -137,24 +147,31 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         }}
       </CldUploadWidget>
 
-      {sortedStories.map((story) => (
-        <div
-          key={story.id}
-          className="flex flex-col items-center gap-2 cursor-pointer"
-        >
-          <Image
-            src={story.user.avatar || "/noAvatar.png"}
-            alt="avatar"
-            width={80}
-            height={80}
-            className="w-20 h-20 rounded-full ring-2"
-            onClick={() => openStoryViewer(story)}
-          />
-          <span className="font-medium">
-            {story.user.name || story.user.username}
-          </span>
-        </div>
-      ))}
+      {sortedStories.map((story) => {
+        const hasViewed = story.storyViews.some(
+          (view) => view.viewerId === userId
+        );
+        return (
+          <div
+            key={story.id}
+            className="flex flex-col items-center gap-2 cursor-pointer"
+          >
+            <Image
+              src={story.user.avatar || "/noAvatar.png"}
+              alt="avatar"
+              width={80}
+              height={80}
+              className={`w-20 h-20 rounded-full ring-2 ${
+                hasViewed ? "ring-transparent" : "ring-blue-500"
+              }`}
+              onClick={() => openStoryViewer(story)}
+            />
+            <span className="font-medium">
+              {story.user.name || story.user.username}
+            </span>
+          </div>
+        );
+      })}
 
       {isStoryView && activeStoryUser && (
         <StoryView

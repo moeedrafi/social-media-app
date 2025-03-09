@@ -277,3 +277,19 @@ export const deletePost = async (postId: number) => {
     throw new Error("Something went wrong when deleting post!");
   }
 };
+
+export const seenStory = async (storyId: number) => {
+  const { userId } = await auth();
+  if (!userId) throw new Error("User is not authenticated!");
+
+  try {
+    await prisma.storyViews.upsert({
+      where: { storyId_viewerId: { storyId, viewerId: userId } },
+      create: { storyId, viewerId: userId },
+      update: {},
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Something went wrong when seeing story!");
+  }
+};
