@@ -17,7 +17,7 @@ const ProgressBar = ({ duration, onComplete }: ProgressBarProps) => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          onComplete();
+          setTimeout(onComplete, 0);
           return 100;
         }
         return prev + 100 / (duration / 100);
