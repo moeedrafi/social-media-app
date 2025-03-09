@@ -1,12 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Story } from "@prisma/client";
 import ProgressBar from "./ProgressBar";
+import { Story, User } from "@prisma/client";
 
+type StoryWithUser = Story & { user: User };
 interface StoryViewProps {
-  userStory: Story;
+  userStory: StoryWithUser;
+  isOwnStory: boolean;
+  isFirstStory: boolean;
+  isLastStory: boolean;
   nextStory: () => void;
+  prevStory: () => void;
   setIsStoryView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -14,6 +19,10 @@ const StoryView = ({
   userStory,
   setIsStoryView,
   nextStory,
+  prevStory,
+  isOwnStory,
+  isFirstStory,
+  isLastStory,
 }: StoryViewProps) => {
   return (
     <div className="absolute top-0 right-0 w-full h-screen bg-slate-300 bg-opacity-50 flex flex-col items-center justify-center gap-2 z-30">
@@ -27,13 +36,17 @@ const StoryView = ({
       </button>
 
       <div className="flex items-center gap-10">
-        <button className="bg-blue-500 text-white p-2 rounded-lg">
+        <button
+          onClick={prevStory}
+          disabled={isOwnStory || isFirstStory}
+          className="bg-blue-500 text-white p-2 rounded-lg disabled:cursor-not-allowed disabled:opacity-50"
+        >
           Previous
         </button>
         <div className="bg-gray-400 p-5">
           <Image
             src={userStory.img}
-            alt="avatar"
+            alt="story"
             width={384}
             height={384}
             className="w-full h-[90%] rounded-lg"
@@ -41,11 +54,18 @@ const StoryView = ({
         </div>
         <button
           onClick={nextStory}
-          className="bg-blue-500 text-white p-2 rounded-lg"
+          disabled={isLastStory}
+          className="bg-blue-500 text-white p-2 rounded-lg disabled:cursor-not-allowed disabled:opacity-50"
         >
           Next
         </button>
       </div>
+
+      {isOwnStory && (
+        <div className="bg-white p-4 rounded-lg shadow-lg">
+          <h3 className="text-lg font-bold">Seen by:</h3>
+        </div>
+      )}
     </div>
   );
 };

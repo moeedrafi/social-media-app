@@ -70,17 +70,33 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
   const otherStories = optimisticStories.filter(
     (story) => story.userId !== userId
   );
+  const sortedStories = [...userStories, ...otherStories];
 
-  const [activeStoryUser, setActiveStoryUser] = useState<null | Story>(null);
+  const [activeStoryUser, setActiveStoryUser] = useState<StoryWithUser | null>(
+    null
+  );
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-  const openStoryViewer = (story: Story) => {
+  const openStoryViewer = (story: StoryWithUser) => {
     setIsStoryView(true);
     setActiveStoryUser(story);
+    setCurrentStoryIndex(sortedStories.findIndex((s) => s.id === story.id));
   };
   const nextStory = () => {
-    if (currentStoryIndex < stories.length - 1) {
-      setCurrentStoryIndex((prev) => prev + 1);
-      setActiveStoryUser(stories[currentStoryIndex + 1]);
+    if (currentStoryIndex < sortedStories.length - 1) {
+      const nextIndex = currentStoryIndex + 1;
+      setCurrentStoryIndex(nextIndex);
+      setActiveStoryUser(sortedStories[nextIndex]);
+    } else {
+      setIsStoryView(false);
+    }
+  };
+  const prevStory = () => {
+    if (activeStoryUser && activeStoryUser.userId === userId) {
+      setIsStoryView(false);
+    } else if (currentStoryIndex > 0) {
+      const prevIndex = currentStoryIndex - 1;
+      setCurrentStoryIndex(prevIndex);
+      setActiveStoryUser(sortedStories[prevIndex]);
     } else {
       setIsStoryView(false);
     }
@@ -121,26 +137,7 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         }}
       </CldUploadWidget>
 
-      {userStories.map((story) => (
-        <div
-          key={story.id}
-          className="flex flex-col items-center gap-2 cursor-pointer"
-        >
-          <Image
-            src={story.user.avatar || "/noAvatar.png"}
-            alt="avatar"
-            width={80}
-            height={80}
-            className="w-20 h-20 rounded-full ring-2"
-            onClick={() => setIsStoryView(!isStoryView)}
-          />
-          <span className="font-medium">
-            {story.user.name || story.user.username}
-          </span>
-        </div>
-      ))}
-
-      {otherStories.map((story) => (
+      {sortedStories.map((story) => (
         <div
           key={story.id}
           className="flex flex-col items-center gap-2 cursor-pointer"
@@ -159,11 +156,15 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         </div>
       ))}
 
-      {isStoryView && (
+      {isStoryView && activeStoryUser && (
         <StoryView
+          isFirstStory={currentStoryIndex === 0}
+          isLastStory={currentStoryIndex === sortedStories.length - 1}
           nextStory={nextStory}
-          userStory={activeStoryUser!}
+          prevStory={prevStory}
+          userStory={activeStoryUser}
           setIsStoryView={setIsStoryView}
+          isOwnStory={activeStoryUser.userId === userId}
         />
       )}
     </>
