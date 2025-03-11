@@ -2,15 +2,27 @@
 
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
-import { addStory, seenStory } from "@/lib/actions";
-import { Story, StoryViews, User } from "@prisma/client";
+import { addStory, addStoryVisiblity, seenStory } from "@/lib/actions";
+import {
+  Follower,
+  Story,
+  StoryViews,
+  StoryVisibility,
+  User,
+} from "@prisma/client";
 import { useOptimistic, useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import StoryView from "./StoryView";
+import StoryVisible from "./StoryVisible";
 
-type StoryWithUser = Story & { user: User; storyViews: StoryViews[] };
+type StoryWithUser = Story & {
+  user: User;
+  storyViews: StoryViews[];
+  storyVisibility: StoryVisibility[];
+};
 interface StoryListProps {
   stories: StoryWithUser[];
+  followers: (Follower & { follower: User })[];
   userId: string;
 }
 
@@ -19,9 +31,11 @@ interface CloudinaryUploadResult {
   public_id: string;
 }
 
-const StoryList = ({ stories, userId }: StoryListProps) => {
+const StoryList = ({ stories, userId, followers }: StoryListProps) => {
   const [storyList, setStoryList] = useState(stories);
   const [isStoryView, setIsStoryView] = useState<boolean>(false);
+  const [isStoryVisible, setIsStoryVisible] = useState<boolean>(false);
+  const [visibleUsers, setVisibleUsers] = useState<string[]>([]);
   const [img, setImg] = useState<CloudinaryUploadResult | null>(null);
 
   const { user } = useUser();
@@ -55,12 +69,22 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         createdAt: new Date(Date.now()),
       },
       storyViews: [],
+      storyVisibility: [],
     });
     try {
       const createdStory = await addStory(img.secure_url);
-      const storyWithViews: StoryWithUser = { ...createdStory, storyViews: [] };
-      setStoryList((prev) => [storyWithViews, ...prev]);
+
+      if (visibleUsers.length > 0) {
+        await addStoryVisiblity(createdStory.id, visibleUsers);
+      }
+      const story: StoryWithUser = {
+        ...createdStory,
+        storyViews: [],
+        storyVisibility: [],
+      };
+      setStoryList((prev) => [story, ...prev]);
       setImg(null);
+      setVisibleUsers([]);
     } catch (error) {
       console.log(error);
     }
@@ -134,11 +158,19 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
                 className="w-20 h-20 rounded-full ring-2"
               />
               {img ? (
-                <form action={add}>
-                  <button className="text-xs bg-blue-500 p-1 rounded-md text-white">
-                    Send
+                <>
+                  <form action={add}>
+                    <button className="text-xs bg-blue-500 p-1 rounded-md text-white">
+                      Send
+                    </button>
+                  </form>
+                  <button
+                    onClick={() => setIsStoryVisible(true)}
+                    className="text-xs bg-blue-500 p-1 rounded-md text-white"
+                  >
+                    Close Friends
                   </button>
-                </form>
+                </>
               ) : (
                 <span className="font-medium">Add a Story</span>
               )}
@@ -151,24 +183,33 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
         const hasViewed = story.storyViews.some(
           (view) => view.viewerId === userId
         );
+
+        const isVisible =
+          story.userId === userId ||
+          story.storyVisibility.some((visible) => visible.userId === userId);
+
         return (
           <div
             key={story.id}
             className="flex flex-col items-center gap-2 cursor-pointer"
           >
-            <Image
-              src={story.user.avatar || "/noAvatar.png"}
-              alt="avatar"
-              width={80}
-              height={80}
-              className={`w-20 h-20 rounded-full ring-2 ${
-                hasViewed ? "ring-transparent" : "ring-blue-500"
-              }`}
-              onClick={() => openStoryViewer(story)}
-            />
-            <span className="font-medium">
-              {story.user.name || story.user.username}
-            </span>
+            {isVisible && (
+              <>
+                <Image
+                  src={story.user.avatar || "/noAvatar.png"}
+                  alt="avatar"
+                  width={80}
+                  height={80}
+                  className={`w-20 h-20 rounded-full ring-2 ${
+                    hasViewed ? "ring-transparent" : "ring-blue-500"
+                  }`}
+                  onClick={() => openStoryViewer(story)}
+                />
+                <span className="font-medium">
+                  {story.user.name || story.user.username}
+                </span>
+              </>
+            )}
           </div>
         );
       })}
@@ -182,6 +223,15 @@ const StoryList = ({ stories, userId }: StoryListProps) => {
           userStory={activeStoryUser}
           setIsStoryView={setIsStoryView}
           isOwnStory={activeStoryUser.userId === userId}
+        />
+      )}
+
+      {isStoryVisible && (
+        <StoryVisible
+          followers={followers}
+          setIsOpen={setIsStoryVisible}
+          selectedUsers={visibleUsers}
+          setSelectedUsers={setVisibleUsers}
         />
       )}
     </>

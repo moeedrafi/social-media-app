@@ -293,3 +293,14 @@ export const seenStory = async (storyId: number) => {
     throw new Error("Something went wrong when seeing story!");
   }
 };
+
+export const addStoryVisiblity = async (storyId: number, userIds: string[]) => {
+  try {
+    await prisma.storyVisibility.createMany({
+      data: userIds.map((userId) => ({ storyId, userId })),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Something went wrong when adding post!");
+  }
+};
