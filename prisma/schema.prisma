@@ -37,31 +37,20 @@ model User {
   blockedBy             Block[]           @relation("BlocksReceived")
   stories               Story[]
   storyVisibility       StoryVisibility[]
-  postVisibility        PostVisibility[]
   storyViews            StoryViews[]
 }
 
 model Post {
-  id             Int              @id @default(autoincrement())
-  desc           String
-  img            String?
-  visbility      String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  userId         String
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comments       Comment[]
-  likes          Like[]
-  postVisibility PostVisibility[]
-}
-
-model PostVisibility {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  desc      String
+  img       String?
+  visbility String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likes     Like[]
 }
 
 model Comment {
