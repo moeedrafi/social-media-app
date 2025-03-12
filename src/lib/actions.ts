@@ -304,3 +304,25 @@ export const addStoryVisiblity = async (storyId: number, userIds: string[]) => {
     throw new Error("Something went wrong when adding post!");
   }
 };
+
+export const addReply = async (
+  postId: number,
+  parentId: number,
+  desc: string
+) => {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("User is not authenticated!");
+  }
+
+  try {
+    const createdReply = await prisma.comment.create({
+      data: { desc, parentId, userId, postId },
+      include: { user: true },
+    });
+
+    return createdReply;
+  } catch (error) {
+    console.log(error);
+  }
+};

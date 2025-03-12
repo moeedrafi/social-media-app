@@ -7,8 +7,13 @@ import { useOptimistic, useState } from "react";
 
 import Avatar from "@/components/Avatar";
 import { addComment } from "@/lib/actions";
+import Replies from "@/components/feed/Replies";
 
-type CommentWithUser = Comment & { user: User };
+type CommentWithUser = Comment & {
+  user: User;
+  replies: Array<Comment & { user: User }>;
+  _count: { likes: number };
+};
 interface CommentsProps {
   postId: number;
   comments: CommentWithUser[];
@@ -18,6 +23,7 @@ const Comments = ({ comments, postId }: CommentsProps) => {
   const { user } = useUser();
   const [desc, setDesc] = useState("");
   const [commentState, setCommentState] = useState(comments);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [optimisticComments, addOptimisticComment] = useOptimistic(
     commentState,
     (state, value: CommentWithUser) => [value, ...state]
@@ -46,11 +52,17 @@ const Comments = ({ comments, postId }: CommentsProps) => {
         website: "",
         createdAt: new Date(Date.now()),
       },
+      parentId: null,
+      _count: { likes: 0 },
+      replies: [],
     });
 
     try {
       const createdComment = await addComment(postId, desc);
-      setCommentState((prev) => [createdComment, ...prev]);
+      setCommentState((prev) => [
+        { ...createdComment, _count: { likes: 0 }, replies: [] },
+        ...prev,
+      ]);
     } catch (error) {
       console.log(error);
     }
@@ -110,9 +122,33 @@ const Comments = ({ comments, postId }: CommentsProps) => {
                     className="w-4 h-4 cursor-pointer"
                   />
                   <span className="text-gray-300">|</span>
-                  <span>0 Likes</span>
+                  <span>{comment._count.likes} Likes</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Image
+                    src="/comment.png"
+                    alt="comment"
+                    width={12}
+                    height={12}
+                    className="w-4 h-4 cursor-pointer"
+                    onClick={() =>
+                      setReplyingTo(
+                        replyingTo === comment.id ? null : comment.id
+                      )
+                    }
+                  />
+                  <span className="text-gray-300">|</span>
+                  <span>{comment.replies.length} Replies</span>
                 </div>
               </div>
+
+              {replyingTo === comment.id && (
+                <Replies
+                  postId={postId}
+                  commentId={comment.id}
+                  replies={comment.replies}
+                />
+              )}
             </div>
 
             <Image
