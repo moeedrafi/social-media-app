@@ -10,8 +10,6 @@ This is a full-stack social media application built with Next.js 15, TailwindCSS
 - Authentication: Clerk
 - File Upload: Cloudinary
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
 ## Features
 
 - Responsive Layout: Fully optimized for desktop and mobile devices.
@@ -32,11 +30,6 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - Add and view nested comment replies.
 - Optimistic UI for instant updates.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
 ## Database Schema
 
 Built with Prisma and Neon DB (PostgreSQL), the schema includes models for users, posts, comments, likes, stories, followers, and more.
@@ -54,4 +47,14 @@ Key Models:
 1. Clone the repository:
    <pre>git clone https://github.com/moeedrafi/social-media-app.git
    cd social-media-app</pre>
-3. 
+2. Install dependencies:
+   <pre>npm install</pre>
+3. Set up environment variables (create a .env file):
+   <pre>DATABASE_URL=your_neon_db_url
+   NEXT_PUBLIC_CLERK_FRONTEND_API=your_clerk_frontend_api
+   CLERK_API_KEY=your_clerk_api_key
+   CLOUDINARY_URL=your_cloudinary_url</pre>
+4. Push Prisma schema to the database:
+   <prenpx prisma db push</pre>
+5. Run the development server: 
+   <pre>npm run dev</pre>
