@@ -13,22 +13,17 @@ This project is a full-featured social media application designed to deliver a s
 ## Features
 
 - Responsive Layout: Fully optimized for desktop and mobile devices.
-- Clerk Authentication: Seamless user authentication and management.
-- Home Page: Dynamic and responsive feed.
-- Stories: Post and view disappearing stories.
+- User Authentication: Secure and seamless auth with Clerk.
+- Home Page: Dynamic and interactive user feed.
+- Stories: Stories: Create, view, and manage stories in real-time using Optimistic UI.
+- Story Visibility: Control who can view specific stories.
 - Post Management: Add, update, and delete posts with images.
-- Post Interactions: Like and comment on posts.
-- Commenting System: Nested comments and replies.
-- Profile Page: User profile with dynamic data.
-- RightBar & LeftBar: Additional user info and navigation.
-- Progress bar for viewing stories.
-- Navigate between stories.
-- Visual indicators for seen stories.
-- Restrict seen list visibility to the story owner.
-- Choose specific users who can view a story.
-- Search and add users to visibility list.
-- Add and view nested comment replies.
-- Optimistic UI for instant updates.
+- Post Interactions: Like and comment on posts in real-time using Optimistic UI.
+- Commenting System: Nested comments and threaded replies in real-time using Optimistic UI.
+- User Profile: View and update dynamic user data.
+- Friendship Management: Follow, unfollow, and block users in real-time using Optimistic UI.
+- Optimistic UI: Instant feedback for user actions without page reload.
+- Performance Optimization: Prisma indexes (@@index) on key fields like StoryViews ensure fast and efficient data retrieval.
 
 ## Database Schema
 
