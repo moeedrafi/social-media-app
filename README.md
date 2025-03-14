@@ -55,6 +55,6 @@ Key Models:
    CLERK_API_KEY=your_clerk_api_key
    CLOUDINARY_URL=your_cloudinary_url</pre>
 4. Push Prisma schema to the database:
-   <prenpx prisma db push</pre>
+   <pre>npx prisma db push</pre>
 5. Run the development server: 
    <pre>npm run dev</pre>
