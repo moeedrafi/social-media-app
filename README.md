@@ -53,5 +53,5 @@ Key Models:
 
 1. Clone the repository:
    <pre>git clone https://github.com/moeedrafi/social-media-app.git
-         cd social-media-app</pre>
+cd social-media-app</pre>
 3. 
