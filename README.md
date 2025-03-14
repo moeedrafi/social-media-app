@@ -12,17 +12,46 @@ This is a full-stack social media application built with Next.js 15, TailwindCSS
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- Responsive Layout: Fully optimized for desktop and mobile devices.
+- Clerk Authentication: Seamless user authentication and management.
+- Home Page: Dynamic and responsive feed.
+- Stories: Post and view disappearing stories.
+- Post Management: Add, update, and delete posts with images.
+- Post Interactions: Like and comment on posts.
+- Commenting System: Nested comments and replies.
+- Profile Page: User profile with dynamic data.
+- RightBar & LeftBar: Additional user info and navigation.
+- Progress bar for viewing stories.
+- Navigate between stories.
+- Visual indicators for seen stories.
+- Restrict seen list visibility to the story owner.
+- Choose specific users who can view a story.
+- Search and add users to visibility list.
+- Add and view nested comment replies.
+- Optimistic UI for instant updates.
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Database Schema
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Built with Prisma and Neon DB (PostgreSQL), the schema includes models for users, posts, comments, likes, stories, followers, and more.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Key Models:
+- User: Stores user profile and relationship data.
+- Post: Contains post content, images, and interactions.
+- Comment: Supports nested replies and likes.
+- Like: Tracks likes on posts and comments.
+- Follower, FollowRequest, Block: Manages user relationships.
+- Story, StoryViews, StoryVisibility: Handles stories and visibility setting
+
+## Installation & Setup
+
+1. Clone the repository:
+   <pre>```git clone https://github.com/moeedrafi/social-media-app.git
+cd social-media-app```</pre>
+3. 
