@@ -4,11 +4,11 @@ This is a full-stack social media application built with Next.js 15, TailwindCSS
 
 ## Tech Stack
 
-Frontend: Next.js 15, TailwindCSS
-Backend: Server Actions, Prisma ORM
-Database: Neon DB (PostgreSQL)
-Authentication: Clerk
-File Upload: Cloudinary
+- Frontend: Next.js 15, TailwindCSS
+- Backend: Server Actions, Prisma ORM
+- Database: Neon DB (PostgreSQL)
+- Authentication: Clerk
+- File Upload: Cloudinary
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
