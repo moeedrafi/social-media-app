@@ -52,6 +52,6 @@ Key Models:
 ## Installation & Setup
 
 1. Clone the repository:
-   <pre>```git clone https://github.com/moeedrafi/social-media-app.git
-cd social-media-app```</pre>
+   <pre>git clone https://github.com/moeedrafi/social-media-app.git
+         cd social-media-app</pre>
 3. 
