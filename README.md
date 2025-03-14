@@ -1,5 +1,7 @@
 # Social Media App
 
+This is a full-stack social media application built with Next.js 15, TailwindCSS, Neon DB, Prisma ORM, and Clerk for authentication. It features a responsive, dynamic, and fully interactive user experience, supporting posts, comments, likes, stories, follow requests, and more.
+
 ## Getting Started
 
 First, run the development server:
